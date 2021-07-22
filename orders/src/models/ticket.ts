@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import { Order, OrderStatus } from './order';
+import { updateIfCurrentPlugin } from 'mongoose-update-if-current';
 
 interface TicketAttrs {
     id: string;
@@ -10,12 +11,14 @@ interface TicketAttrs {
 // Interface describing the properties a User model has
 interface TicketModel extends mongoose.Model<TicketDocument> {
     build(attrs: TicketAttrs): TicketDocument;
+    findByEvent(event: { id: string, version: number }): Promise<TicketDocument | null>;
 }
 
 // Interfsce describing what properties a User document has
 interface TicketDocument extends mongoose.Document {
     title: string;
     price: number;
+    version: number;
     isReserved(): Promise<boolean>;
 }
 
@@ -38,6 +41,16 @@ const TicketSchema = new mongoose.Schema({
         }
     }
 );
+
+TicketSchema.set('versionKey', 'version');
+TicketSchema.plugin(updateIfCurrentPlugin);
+
+TicketSchema.statics.findByEvent = (event: {id:string, version: number}) => {
+    return Ticket.findOne({
+        _id: event.id,
+        version: event.version - 1
+    });
+}
 
 TicketSchema.statics.build = (attrs: TicketAttrs) => {
     return new Ticket({
