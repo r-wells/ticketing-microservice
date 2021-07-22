@@ -3,11 +3,11 @@ import 'express-async-errors';
 import { json } from 'body-parser';
 import cookieSession from 'cookie-session';
 
-import { currentUserRouter } from './routes/current-user';
-import { signInRouter } from './routes/signin';
-import { signOutRouter } from './routes/signout';
-import { signUpRouter } from './routes/signup';
-import { errorHandler, NotFoundError } from '@reach2/sgticketscommon';
+import { errorHandler, NotFoundError, currentUser } from '@reach2/sgticketscommon';
+import { newOrderRouter } from './routes/new';
+import { showOrderRouter } from './routes/show';
+import { indexOrderRouter } from './routes/index';
+import { deleteOrderRouter } from './routes/delete';
 
 const app = express();
 app.set('trust proxy', true);
@@ -16,11 +16,12 @@ app.use(cookieSession({
     signed: false,
     secure: process.env.NODE_ENV !== 'test'
 }));
+app.use(currentUser);
 
-app.use(currentUserRouter);
-app.use(signInRouter);
-app.use(signOutRouter);
-app.use(signUpRouter);
+app.use(newOrderRouter);
+app.use(showOrderRouter);
+app.use(indexOrderRouter);
+app.use(deleteOrderRouter);
 
 app.all('*', async (req: Request, res: Response) => { 
     throw new NotFoundError();
