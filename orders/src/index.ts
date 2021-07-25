@@ -7,7 +7,7 @@ import { ExpirationCompleteListener } from './events/listeners/expiration-comple
 import { PaymentCreatedListener } from './events/listeners/payment-created-listener';
 
 const start = async () => {
-    console.log('starting orders');
+    console.log('starting orders...');
     if(!process.env.JWT_KEY) {
         throw new Error('JWT_KEY is not defined');
     }
@@ -43,7 +43,7 @@ const start = async () => {
             useUnifiedTopology: true,
             useCreateIndex: true
         });
-        console.log('Mongo Connection Successful');
+        console.log('Mongo Connection Successful!');
     } catch(err) {
         console.error(err);
     }
