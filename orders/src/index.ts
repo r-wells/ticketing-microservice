@@ -43,7 +43,7 @@ const start = async () => {
             useUnifiedTopology: true,
             useCreateIndex: true
         });
-        console.log('Mongo Connection Successful');
+        console.log('Mongo Connection Successful!');
     } catch(err) {
         console.error(err);
     }
